@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="custom_external_layout"
+              inherit_id="web.external_layout_standard">
+
+        <xpath expr="//div[contains(@t-attf-class, 'header')]"
+               position="attributes">
+
+            <attribute name="t-if">
+                not o or o._name != 'account.move'
+            </attribute>
+
+        </xpath>
+
+        <xpath expr="//div[contains(@t-attf-class, 'footer')]"
+               position="attributes">
+
+            <attribute name="t-if">
+                not o or o._name != 'account.move'
+            </attribute>
+
+        </xpath>
+
+    </template>
+
+</odoo>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_order_form_credit_approval" model="ir.ui.view">
+        <field name="name">sale.order.form.credit.approval</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//button[@id='action_confirm']"
+                   position="attributes">
+
+                <attribute name="invisible">
+                    (credit_limit_exceeded and approval_status != 'approved') or state != 'sent'
+                </attribute>
+
+            </xpath>
+
+            <xpath expr="//button[@name='action_confirm'][2]"
+                   position="attributes">
+
+                <attribute name="invisible">
+                    (credit_limit_exceeded and approval_status != 'approved') or state != 'draft'
+                </attribute>
+
+            </xpath>
+
+
+            <xpath expr="//header" position="inside">
+
+                <button
+                        name="action_request_approval"
+                        type="object"
+                        string="Request Approval"
+                        class="btn-primary"
+                        invisible="not credit_limit_exceeded or approval_status != 'pending'"
+                />
+
+                <button name="action_approve_order"
+                        type="object"
+                        string="Approve"
+                        class="btn-success"
+                        groups="custom_sale.group_sale_order_admin"
+                        invisible="approval_status != 'waiting'"
+                />
+
+                <button name="action_reject_order"
+                        type="object"
+                        string="Reject"
+                        class="btn-success"
+                        groups="custom_sale.group_sale_order_admin"
+                        invisible="approval_status != 'waiting'"
+                />
+
+                <field name="approval_status"
+                       widget="statusbar"
+                       statusbar_visible="waiting,approved,rejected"
+                       invisible="approval_status == 'pending'"
+                       readonly="1"/>
+
+            </xpath>
+
+<!--            <xpath expr="//field[@name='partner_id']" position="after">-->
+<!--                <field name="total_credit_amount" readonly="1"/>-->
+<!--                <field name="credit_limit_exceeded" readonly="1"/>-->
+<!--            </xpath>-->
+
+        </field>
+    </record>
+
+
+    <record id="action_order_approval" model="ir.actions.act_window">
+        <field name="name">Order Approvals</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('approval_status','=','waiting')]</field>
+    </record>
+
+</odoo>
